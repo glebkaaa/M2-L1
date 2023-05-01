@@ -22,9 +22,9 @@ def get_anime():
     url = 'https://kitsu.io/api/edge/anime?filter[text]=tokio'
     res = requests.get(url)
     data = res.json()
-    path = data['data'][randint(0, 5)]['attributes']['titles']['en_jp']
-    title_ru = GoogleTranslator(source='auto', target='ru').translate(path)
-    return title_ru
+    path = data['data'][randint(0, 5)]['attributes']['titles']['ja_jp']
+    title = GoogleTranslator(source='auto', target=language).translate(path)
+    return title
 
 
 def common_image():
@@ -68,15 +68,31 @@ async def fox(ctx):
 
 @bot.command()
 async def anime(ctx):
+    await ctx.send('На каком языке Вы хотите получить название?' + '\n' + '$ru - русский' + '\n' + '$en - английский' + '\n' + '$jp - японский')
+
+
+@bot.command()
+async def ru(ctx):
+    global language
+    language = 'ru'
     anime_link = get_anime()
     await ctx.send(anime_link)
 
 
 @bot.command()
-async def author(ctx):
-    with open('images/my-meme.jpg', 'rb') as f:
-        picture = discord.File(f)
-    await ctx.send(file=picture)
+async def en(ctx):
+    global language
+    language = 'en'
+    anime_link = get_anime()
+    await ctx.send(anime_link)
+
+
+@bot.command()
+async def jp(ctx):
+    global language
+    language = 'ja'
+    anime_link = get_anime()
+    await ctx.send(anime_link)
 
 
 @bot.command()
@@ -98,5 +114,13 @@ async def mem(ctx):
         legendary_image()
         await ctx.send(file=legendary_picture)
         await ctx.send('Легендарный мем')
+
+
+@bot.command()
+async def author(ctx):
+    with open('images/my-meme.jpg', 'rb') as f:
+        picture = discord.File(f)
+    await ctx.send(file=picture)
+
 
 bot.run(bot_token)
